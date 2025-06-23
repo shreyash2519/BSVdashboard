@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+lifelines
+matplotlib
+seaborn
+textblob
+openai
+langchain
+langchain-experimental
