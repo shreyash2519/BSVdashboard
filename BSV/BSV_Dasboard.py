@@ -147,7 +147,7 @@ if uploaded_file is not None:
 
             if user_question:
                 try:
-                    api_key = "YOUR_GEMINI_API_KEY_HERE"
+                    api_key = "AIzaSyBWQeAFv7aSPqlfv97OTGa-1pjH6LrEmnc"
                     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
 
                     context = f"Here is a preview of the dataset:\n{df.head(3).to_string(index=False)}\n\nQuestion: {user_question}"
