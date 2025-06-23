@@ -12,7 +12,7 @@ from langchain_experimental.agents import create_pandas_dataframe_agent
 from langchain.agents.agent_types import AgentType
 
 # 🔹 Title
-st.title("📊 BioStatView:- Insights in Oncology")
+st.title("📊 BioStatView - Insights in Oncology")
 
 # 🔹 File uploader
 uploaded_file = st.file_uploader("📁 Upload your dataset (Structured or Unstructured)", type=['csv', 'xlsx', 'xls', 'txt', 'json'])
