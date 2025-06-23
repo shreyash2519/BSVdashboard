@@ -6,13 +6,10 @@ from textblob import TextBlob
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
-
-from langchain.chat_models import ChatOpenAI
-from langchain_experimental.agents import create_pandas_dataframe_agent
-from langchain.agents.agent_types import AgentType
+import requests  # For Gemini API
 
 # 🔹 Title
-st.title("📊 BioStatView - Insights in Oncology")
+st.title("📊 BioStatView:- Insights in Oncology")
 
 # 🔹 File uploader
 uploaded_file = st.file_uploader("📁 Upload your dataset (Structured or Unstructured)", type=['csv', 'xlsx', 'xls', 'txt', 'json'])
@@ -144,26 +141,39 @@ if uploaded_file is not None:
                     st.write(cph.summary)
                     st.pyplot(cph.plot())
 
-            # 🔸 AI Q&A
-            st.subheader("💬 Ask AI a Question About Your Data")
+            # 🔸 Gemini Q&A
+            st.subheader("💬 Ask Gemini AI a Question About Your Data")
             user_question = st.text_input("Type your question below:")
 
             if user_question:
                 try:
-                    os.environ["OPENAI_API_KEY"] = "sk-REPLACE-YOUR-KEY"
-                    agent = create_pandas_dataframe_agent(
-                        ChatOpenAI(temperature=0),
-                        df,
-                        verbose=False,
-                        agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-                        handle_parsing_errors=True,
-                        allow_dangerous_code=True
-                    )
-                    with st.spinner("Thinking..."):
-                        response = agent.run(user_question)
-                        st.success(response)
+                    api_key = "YOUR_GEMINI_API_KEY_HERE"
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
+
+                    context = f"Here is a preview of the dataset:\n{df.head(3).to_string(index=False)}\n\nQuestion: {user_question}"
+
+                    headers = {
+                        "Content-Type": "application/json"
+                    }
+
+                    data = {
+                        "contents": [
+                            {
+                                "parts": [{"text": context}]
+                            }
+                        ]
+                    }
+
+                    with st.spinner("💡 Gemini AI is thinking..."):
+                        response = requests.post(url, headers=headers, json=data)
+                        result = response.json()
+                        if "candidates" in result:
+                            gemini_reply = result["candidates"][0]["content"]["parts"][0]["text"]
+                            st.success(gemini_reply)
+                        else:
+                            st.error("⚠️ Gemini did not return a valid response.")
                 except Exception as e:
-                    st.error(f"❌ Error: {e}")
+                    st.error(f"❌ Error using Gemini API: {e}")
 
         elif file_name.endswith('.txt'):
             text_data = uploaded_file.read().decode("utf-8")
