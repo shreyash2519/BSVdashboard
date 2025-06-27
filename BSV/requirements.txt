@@ -1,10 +1,9 @@
 streamlit
 pandas
 numpy
-lifelines
 matplotlib
 seaborn
+lifelines
 textblob
-openai
-langchain
-langchain-experimental
+statsmodels
+python-docx
